@@ -24,7 +24,6 @@ def simple_assembler(program):
     while pointer < len(program):
         handler, *args = program[pointer]
         loc[handler](*args)
-
         pointer += 1
 
     return reg
