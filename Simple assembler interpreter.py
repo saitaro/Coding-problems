@@ -27,3 +27,14 @@ def simple_assembler(program):
         pointer += 1
 
     return reg
+
+
+code = '''\
+mov a 5
+inc a
+dec a
+dec a
+jnz a -1
+inc a'''
+
+print(simple_assembler(code.splitlines()))
