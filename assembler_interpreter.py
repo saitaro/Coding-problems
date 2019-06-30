@@ -15,7 +15,7 @@ def assembler_interpreter(program):
                 cmd = ['msg']+["".join(word) for word in re.findall(ptn, cmd)]
             else:
                 cmd = [word.strip(',') for word in cmd.split()]
-    
+
             instructions.append(cmd)
 
     pointer = 0
@@ -39,11 +39,11 @@ def assembler_interpreter(program):
         )
 
     def jmp(label):
-        nonlocal pointer, call_stack
+        nonlocal pointer
         if label in reg:
             pointer = reg[label]
         else:
-            pointer = instructions[pointer+1:].index([f'{label}:']) + pointer+1
+            pointer = instructions[pointer:].index([f'{label}:']) + pointer
             reg[label] = pointer
 
     def cmp(x, y):
@@ -74,10 +74,7 @@ def assembler_interpreter(program):
     def msg(*args):
         nonlocal output
         for string in args:
-            if string in reg:  
-                output += str(reg[string])
-            else:
-                output += string
+            output += str(reg[string]) if string in reg else string
 
     def end():
         nonlocal pointer
@@ -85,16 +82,12 @@ def assembler_interpreter(program):
 
     loc = locals()
     while pointer < len(instructions):
-        try:
-            handler, *args = instructions[pointer]
-            if handler in {'mov', 'inc', 'dec', 'add', 'sub', 'mul', 'div'}:
-                loc['math_operator'](handler, *args)
-            else:
-                loc[handler](*args)
-            pointer += 1
-
-        except ValueError:
-            continue
+        handler, *args = instructions[pointer]
+        if handler in {'mov', 'inc', 'dec', 'add', 'sub', 'mul', 'div'}:
+            loc['math_operator'](handler, *args)
+        else:
+            loc[handler](*args)
+        pointer += 1
 
     return output if not call_stack else -1
 
