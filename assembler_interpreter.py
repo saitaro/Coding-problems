@@ -84,7 +84,7 @@ def assembler_interpreter(program):
     while pointer < len(instructions):
         handler, *args = instructions[pointer]
         if handler in {'mov', 'inc', 'dec', 'add', 'sub', 'mul', 'div'}:
-            loc['math_operator'](handler, *args)
+            math_operator(handler, *args)
         else:
             loc[handler](*args)
         pointer += 1
